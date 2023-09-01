@@ -1,13 +1,12 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {appActions} from "app/app.reducer";
 import {authAPI, LoginParamsType} from "features/auth/auth.api";
-import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "common/utils";
+import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError, thunkTryCatch} from "common/utils";
 import {ResultCode} from "../../common/enums";
 
-export const Login = createAppAsyncThunk<{ isLoggedIn: boolean }, { data: LoginParamsType }>('auth/login',
-    async (arg, thunkAPI) => {
+export const Login = createAppAsyncThunk<{ isLoggedIn: boolean }, { data: LoginParamsType }>('auth/login', async (arg, thunkAPI) => {
         const {dispatch, rejectWithValue} = thunkAPI
-        try {
+        return thunkTryCatch(thunkAPI, async () => {
             dispatch(appActions.setAppStatus({status: "loading"}));
             const res = await authAPI.login(arg.data)
             if (res.data.resultCode === ResultCode.Success) {
@@ -19,14 +18,11 @@ export const Login = createAppAsyncThunk<{ isLoggedIn: boolean }, { data: LoginP
                 handleServerAppError(res.data, dispatch, isShowAppError);
                 return rejectWithValue(res.data)
             }
-        } catch (e) {
-            handleServerNetworkError(e, dispatch)
-            return rejectWithValue(null)
-        }
+        })
     })
 export const Logout = createAppAsyncThunk<{ isLoggedIn: boolean }, undefined>('auth/logout', async (_, thunkAPI) => {
-    const {dispatch, rejectWithValue} = thunkAPI
-    try {
+    const {dispatch} = thunkAPI
+    return thunkTryCatch(thunkAPI, async () => {
         dispatch(appActions.setAppStatus({status: "loading"}));
         const res = await authAPI.logout()
         if (res.data.resultCode === ResultCode.Success) {
@@ -37,10 +33,7 @@ export const Logout = createAppAsyncThunk<{ isLoggedIn: boolean }, undefined>('a
             return {isLoggedIn: true}
         }
 
-    } catch (e) {
-        handleServerNetworkError(e, dispatch)
-        return rejectWithValue(null)
-    }
+    })
 })
 
 const slice = createSlice({
