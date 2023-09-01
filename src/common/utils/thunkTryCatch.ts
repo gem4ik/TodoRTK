@@ -4,6 +4,17 @@ import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
 import { appActions } from 'app/app.reducer';
 import { BaseResponseType} from 'common/types';
 
+
+
+/**
+ * Обертка для выполнения асинхронного кода с обработкой ошибок и установкой статуса приложения.
+ *
+ * @template T - Тип возвращаемого значения.
+ * @param {BaseThunkAPI<AppRootStateType, unknown, AppDispatch, null | BaseResponseType>} thunkAPI - Объект API для Thunk.
+ * @param {() => Promise<T>} logic - Функция, содержащая асинхронный код, который нужно выполнить.
+ * @returns {Promise<T | ReturnType<typeof thunkAPI.rejectWithValue>>} - Промис, возвращающий результат выполнения асинхронного кода или значение отклонения с помощью `rejectWithValue`.
+ */
+
 export const thunkTryCatch = async <T>(
     thunkAPI: BaseThunkAPI<AppRootStateType, unknown, AppDispatch, null | BaseResponseType>,
     logic: () => Promise<T>
