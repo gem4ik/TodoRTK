@@ -5,7 +5,7 @@ import { appActions } from 'app/app.reducer';
 import { BaseResponseType} from 'common/types';
 
 
-
+//JSDOC
 /**
  * Обертка для выполнения асинхронного кода с обработкой ошибок и установкой статуса приложения.
  *

@@ -27,8 +27,7 @@ function App() {
     const isInitialized = useSelector(selectIsInitialized);
     const isLoggedIn = useSelector(selectIsLoggedIn);
 
-    const {Logout} = useActions(authThunk);
-    const {initializeApp} = useActions(appThunk);
+    const {Logout, initializeApp} = useActions({...authThunk, ...appThunk})
 
     useEffect(() => {
         initializeApp()

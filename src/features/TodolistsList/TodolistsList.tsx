@@ -6,7 +6,7 @@ import {Grid, Paper} from "@mui/material";
 import {AddItemForm} from "common/components";
 import {Todolist} from "./Todolist/Todolist";
 import {Navigate} from "react-router-dom";
-import {useActions} from "common/hooks";
+import {useActions, useAppDispatch} from "common/hooks";
 import {selectIsLoggedIn} from "features/auth/auth.selectors";
 import {selectTasks} from "features/TodolistsList/tasks.selectors";
 import {selectTodolists} from "features/TodolistsList/todolists.selectors";
@@ -18,18 +18,18 @@ export const TodolistsList = () => {
     const isLoggedIn = useSelector(selectIsLoggedIn);
 
     const {
-        removeTask,
         fetchTodolists,
-        addTask,
-        updateTask,
         changeTodolistFilter,
         removeTodolist,
         changeTodolistTitle,
-        addTodolist
+        addTodolist,
+        removeTask,
+        addTask,
+        updateTask
     } = useActions({
-        ...tasksThunks,
         ...todolistsThunks,
-        ...todolistsActions
+        ...todolistsActions,
+        ...tasksThunks
     })
 
     useEffect(() => {
@@ -43,6 +43,7 @@ export const TodolistsList = () => {
     const addTaskThunk = useCallback(function (title: string, todolistId: string) {addTask({title, todolistId})}, []);
     const changeStatus = useCallback(function (taskId: string, status: TaskStatuses, todolistId: string) {updateTask({taskId, domainModel: {status}, todolistId})}, []);
     const changeTaskTitle = useCallback(function (taskId: string, title: string, todolistId: string) {updateTask({taskId, domainModel: {title}, todolistId})}, []);
+
     const changeFilter = useCallback(function (filter: FilterValuesType, id: string) {changeTodolistFilter({id, filter})}, []);
     const removeTodolistThunk = useCallback(function (id: string) {removeTodolist(id)}, []);
     const changeTodolistTitleThunk = useCallback(function (id: string, title: string) {changeTodolistTitle({id, title})}, []);
